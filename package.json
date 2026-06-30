@@ -1,0 +1,44 @@
+{
+	"name": "ka-crypto",
+	"version": "1.0.0",
+	"description": "Cross-environment crypto utility for Node.js & Browser, implement RSA-AES hybrid encryption based on native Web Crypto / Node.js crypto without third-party dependencies.",
+	"main": "dist/index.cjs",
+	"module": "dist/index.esm.js",
+	"browser": "dist/index.esm.js",
+	"exports": {
+		".": {
+			"import": "./dist/index.esm.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"scripts": {
+		"build": "rollup -c"
+	},
+	"author": "Kuzuki Azusa",
+	"license": "MIT",
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"keywords": [
+		"crypto",
+		"rsa",
+		"aes",
+		"hybrid-encrypt",
+		"web-crypto",
+		"node-crypto",
+		"cross-browser",
+		"cross-node",
+		"aes-gcm",
+		"rsa-oaep",
+		"encrypt",
+		"decrypt"
+	],
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "^29.0.3",
+		"@rollup/plugin-node-resolve": "^16.0.3",
+		"@rollup/plugin-terser": "^1.0.0"
+	}
+}
