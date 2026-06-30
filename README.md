@@ -244,5 +244,3 @@ Unified transmission structure, directly JSON serializable for PHP backend docki
 ## 📝 License
 
 MIT
-
-> （注：部分内容可能由 AI 生成）

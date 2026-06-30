@@ -5,14 +5,17 @@
 	"main": "dist/index.cjs",
 	"module": "dist/index.esm.js",
 	"browser": "dist/index.esm.js",
+	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.esm.js",
 			"require": "./dist/index.cjs"
 		}
 	},
 	"scripts": {
-		"build": "rollup -c"
+		"build": "rollup -c && npm run copy-types",
+		"copy-types": "node copy-types.js"
 	},
 	"author": "Kuzuki Azusa",
 	"license": "MIT",
