@@ -50,7 +50,7 @@ npm install ka-crypto
 
 ### 1\. Generate RSA Key Pairs
 
-```Plain Text
+```js
 import { keyPairs } from 'ka-crypto';
 
 // Return RSA public key / private key (PEM format)
@@ -60,17 +60,17 @@ const [publicKey, privateKey] = await keyPairs();
 
 ### 2\. Hybrid Encrypt \(RSA \+ AES\)
 
-```Plain Text
+```js
 import { encrypt } from 'ka-crypto';
 
 // Param: plaintext, RSA publicKey (PEM format)
-const { data, valid } = await encrypt('your plain text', publicKey);
+const { data, valid } = await encrypt('your js', publicKey);
 
 ```
 
 ### 3\. Hybrid Decrypt \(RSA \+ AES\)
 
-```Plain Text
+```js
 import { decrypt } from 'ka-crypto';
 
 // Param: data, valid, RSA privateKey (PEM format)
@@ -84,7 +84,7 @@ Support independent use of single encryption and decryption algorithm, flexible 
 
 ### AES Encrypt / Decrypt \(AES\-256\-GCM\)
 
-```Plain Text
+```js
 import { aesEncrypt, aesDecrypt } from 'ka-crypto';
 
 // AES encryption
@@ -97,7 +97,7 @@ const originText = aesDecrypt(cipherText, aesKey, iv, tag);
 
 ### RSA Encrypt / Decrypt \(RSA\-OAEP\-SHA1\)
 
-```Plain Text
+```js
 import { rsaEncrypt, rsaDecrypt } from 'ka-crypto';
 
 // RSA public key encryption
@@ -112,7 +112,7 @@ const originData = rsaDecrypt(rsaCipher, privateKey);
 
 High\-quality pseudo\-random byte generation based on Mersenne Twister algorithm, used for custom IV / key random filling, consistent random logic across Node\.js and browsers\.
 
-```Plain Text
+```js
 import { getRandomValues } from 'ka-crypto';
 
 // Fill Uint8Array with secure random bytes (0-255)
@@ -184,7 +184,7 @@ Quickly generate standard RSA PEM key pairs \(public key \+ private key\) and au
 
 ### Usage
 
-```Plain Text
+```js
 import { exportKeyPairs } from 'ka-crypto';
 
 // Param: distPath (local folder path)
@@ -216,8 +216,8 @@ After successful execution, two standard PEM key files will be generated in the 
 
 Unified transmission structure, directly JSON serializable for PHP backend docking:
 
-```Plain Text
-{
+```ts
+interface CipherData {
     data: string;       // AES encrypted ciphertext (base64)
     valid: {
         key: string;    // RSA-OAEP-SHA1 encrypted AES key (base64)

@@ -1,6 +1,6 @@
 {
 	"name": "ka-crypto",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Cross-environment crypto utility for Node.js & Browser, implement RSA-AES hybrid encryption based on native Web Crypto / Node.js crypto without third-party dependencies.",
 	"main": "dist/index.cjs",
 	"module": "dist/index.esm.js",
