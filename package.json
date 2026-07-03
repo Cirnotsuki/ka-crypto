@@ -1,47 +1,112 @@
 {
-	"name": "ka-crypto",
-	"version": "1.0.1",
-	"description": "Cross-environment crypto utility for Node.js & Browser, implement RSA-AES hybrid encryption based on native Web Crypto / Node.js crypto without third-party dependencies.",
-	"main": "dist/index.cjs",
-	"module": "dist/index.esm.js",
-	"browser": "dist/index.esm.js",
-	"types": "dist/index.d.ts",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.esm.js",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"scripts": {
-		"build": "rollup -c && npm run copy-types",
-		"copy-types": "node copy-types.js"
-	},
-	"author": "Kuzuki Azusa",
-	"license": "MIT",
-	"sideEffects": false,
-	"files": [
-		"dist",
-		"README.md",
-		"LICENSE"
-	],
-	"keywords": [
-		"crypto",
-		"rsa",
-		"aes",
-		"hybrid-encrypt",
-		"web-crypto",
-		"node-crypto",
-		"cross-browser",
-		"cross-node",
-		"aes-gcm",
-		"rsa-oaep",
-		"encrypt",
-		"decrypt"
-	],
-	"devDependencies": {
-		"@rollup/plugin-commonjs": "^29.0.3",
-		"@rollup/plugin-node-resolve": "^16.0.3",
-		"@rollup/plugin-terser": "^1.0.0"
-	}
+  "name": "@ka-libs/crypto",
+  "version": "1.1.0",
+  "description": "Cross-environment crypto utility for Node.js & Browser, implement RSA-AES hybrid encryption based on native Web Crypto / Node.js crypto without third-party dependencies.",
+  "scripts": {
+    "build:js": "rollup -c",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build:clean": "node ./cleanDist.js",
+    "build": "npm run build:clean && npm run build:js"
+  },
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "browser": "dist/index.esm.js",
+  "types": "./dist/types/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    },
+    "./aes-decrypt": {
+      "import": "./dist/esm/exports/aes-decrypt.js",
+      "types": "./dist/types/aes-decrypt.d.ts"
+    },
+    "./aes-encrypt": {
+      "import": "./dist/esm/exports/aes-encrypt.js",
+      "types": "./dist/types/aes-encrypt.d.ts"
+    },
+    "./array-buffer-to-base64": {
+      "import": "./dist/esm/exports/array-buffer-to-base64.js",
+      "types": "./dist/types/array-buffer-to-base64.d.ts"
+    },
+    "./base64-cleaner": {
+      "import": "./dist/esm/exports/base64-cleaner.js",
+      "types": "./dist/types/base64-cleaner.d.ts"
+    },
+    "./base64-to-array-buffer": {
+      "import": "./dist/esm/exports/base64-to-array-buffer.js",
+      "types": "./dist/types/base64-to-array-buffer.d.ts"
+    },
+    "./decrypt": {
+      "import": "./dist/esm/exports/decrypt.js",
+      "types": "./dist/types/decrypt.d.ts"
+    },
+    "./encrypt": {
+      "import": "./dist/esm/exports/encrypt.js",
+      "types": "./dist/types/encrypt.d.ts"
+    },
+    "./export-key-pairs": {
+      "import": "./dist/esm/exports/export-key-pairs.js",
+      "types": "./dist/types/export-key-pairs.d.ts"
+    },
+    "./get-random-bytes": {
+      "import": "./dist/esm/exports/get-random-bytes.js",
+      "types": "./dist/types/get-random-bytes.d.ts"
+    },
+    "./get-random-values": {
+      "import": "./dist/esm/exports/get-random-values.js",
+      "types": "./dist/types/get-random-values.d.ts"
+    },
+    "./key-pairs": {
+      "import": "./dist/esm/exports/key-pairs.js",
+      "types": "./dist/types/key-pairs.d.ts"
+    },
+    "./rsa-decrypt": {
+      "import": "./dist/esm/exports/rsa-decrypt.js",
+      "types": "./dist/types/rsa-decrypt.d.ts"
+    },
+    "./rsa-encrypt": {
+      "import": "./dist/esm/exports/rsa-encrypt.js",
+      "types": "./dist/types/rsa-encrypt.d.ts"
+    },
+    "./uuidv4": {
+      "import": "./dist/esm/exports/uuidv4.js",
+      "types": "./dist/types/uuidv4.d.ts"
+    },
+    "./uuidv5": {
+      "import": "./dist/esm/exports/uuidv5.js",
+      "types": "./dist/types/uuidv5.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "author": "Kuzuki Azusa",
+  "license": "MIT",
+  "keywords": [
+    "crypto",
+    "rsa",
+    "aes",
+    "hybrid-encrypt",
+    "web-crypto",
+    "node-crypto",
+    "cross-browser",
+    "cross-node",
+    "aes-gcm",
+    "rsa-oaep",
+    "encrypt",
+    "decrypt"
+  ],
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "typescript": "^5.8.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

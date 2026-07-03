@@ -1,10 +1,10 @@
-const aesDecrypt = require("./aesDecrypt");
-const rsaDecrypt = require("./rsaDecrypt");
+import {aesDecrypt} from "./aesDecrypt";
+import {rsaDecrypt} from "./rsaDecrypt";
 
 /**
  * 混合解密
  */
-module.exports = async function (data, valid, privateKey) {
+export async function decrypt(data: string, valid: string, privateKey: string) {
   try {
     const aes = await rsaDecrypt(valid, privateKey);
 

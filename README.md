@@ -32,7 +32,7 @@ Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\.
 
 1. Randomly generate AES\-256\-GCM session key and IV
 
-2. Encrypt plaintext with AES\-256\-GCM, get ciphertext and auth tag
+2. Encrypt plainData with AES\-256\-GCM, get ciphertext and auth tag
 
 3. Encrypt AES session key via **RSA\-OAEP\-SHA1** \(PHP standard algorithm\)
 
@@ -63,8 +63,8 @@ const [publicKey, privateKey] = await keyPairs();
 ```js
 import { encrypt } from 'ka-crypto';
 
-// Param: plaintext, RSA publicKey (PEM format)
-const { data, valid } = await encrypt('your js', publicKey);
+// Param: plainData, RSA publicKey (PEM format)
+const { data, valid } = await encrypt('any type of data', publicKey);
 
 ```
 
@@ -74,7 +74,7 @@ const { data, valid } = await encrypt('your js', publicKey);
 import { decrypt } from 'ka-crypto';
 
 // Param: data, valid, RSA privateKey (PEM format)
-const plainText = await decrypt(data, valid, privateKey);
+const plainData = await decrypt(data, valid, privateKey);
 
 ```
 
@@ -88,7 +88,7 @@ Support independent use of single encryption and decryption algorithm, flexible 
 import { aesEncrypt, aesDecrypt } from 'ka-crypto';
 
 // AES encryption
-const aesResult = aesEncrypt(plainText, aesKey, iv);
+const aesResult = aesEncrypt(plainData, aesKey, iv);
 
 // AES decryption
 const originText = aesDecrypt(cipherText, aesKey, iv, tag);
