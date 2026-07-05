@@ -1,6 +1,6 @@
 {
   "name": "@ka-libs/crypto",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Cross-environment crypto utility for Node.js & Browser, implement RSA-AES hybrid encryption based on native Web Crypto / Node.js crypto without third-party dependencies.",
   "scripts": {
     "build:js": "rollup -c",

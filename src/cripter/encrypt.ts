@@ -1,3 +1,4 @@
+import { base64ToArrayBuffer } from "../lib/base64ToArrayBuffer";
 import { aesEncrypt } from "./aesEncrypt";
 import { rsaEncrypt } from "./rsaEncrypt";
 
@@ -10,13 +11,7 @@ export async function encrypt<T>(data: T, publicKey: string) {
 	}
 
 	const aes = await aesEncrypt(data);
-	const valid = await rsaEncrypt(
-		{
-			key: aes.key,
-			iv: aes.iv,
-		},
-		publicKey,
-	);
+	const valid = await rsaEncrypt(base64ToArrayBuffer(aes.payload), publicKey);
 
 	return {
 		valid,

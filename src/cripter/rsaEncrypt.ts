@@ -6,14 +6,20 @@ import { getSubtle } from "../core/getSubtle";
  * RSA加密
  */
 export async function rsaEncrypt<T>(data: T, publicKey: string) {
-	const key = await importPublicKey(publicKey);
-	const encrypted = await getSubtle().encrypt(
-		{
-			name: "RSA-OAEP",
-		},
-		key,
-		new TextEncoder().encode(JSON.stringify(data)),
-	);
+  const key = await importPublicKey(publicKey);
+  let encodeData;
+  if (data instanceof ArrayBuffer) {
+    encodeData = data;
+  } else {
+    encodeData = new TextEncoder().encode(JSON.stringify(data));
+  }
+  const encrypted = await getSubtle().encrypt(
+    {
+      name: "RSA-OAEP",
+    },
+    key,
+    encodeData,
+  );
 
-	return arrayBufferToBase64(encrypted);
-};
+  return arrayBufferToBase64(encrypted);
+}
