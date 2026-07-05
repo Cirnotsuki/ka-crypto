@@ -4,7 +4,7 @@
 
 **Zero\-dependency cross\-platform RSA \+ AES hybrid encryption utility for Node\.js \& Browser, fully compatible with PHP RSA\-OAEP\-SHA1\.**
 
-**GitHub:**[https://github\.com/Cirnotsuki/ka\-crypto](https://github.com/Cirnotsuki/ka-crypto)
+**GitHub:**[https://github\.com/Cirnotsuki/ka\-crypto](https://github.com/Cirnotsuki/@ka-libs/crypto)
 
 Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\. Lightweight and standard\-compliant\.
 
@@ -43,7 +43,7 @@ Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\.
 ## 📦 Installation
 
 ```Plain Text
-npm install ka-crypto
+npm install @ka-libs/crypto
 ```
 
 ## 🚀 Quick Usage
@@ -51,7 +51,7 @@ npm install ka-crypto
 ### 1\. Generate RSA Key Pairs
 
 ```js
-import { keyPairs } from 'ka-crypto';
+import { keyPairs } from '@ka-libs/crypto';
 
 // Return RSA public key / private key (PEM format)
 const [publicKey, privateKey] = await keyPairs();
@@ -61,7 +61,7 @@ const [publicKey, privateKey] = await keyPairs();
 ### 2\. Hybrid Encrypt \(RSA \+ AES\)
 
 ```js
-import { encrypt } from 'ka-crypto';
+import { encrypt } from '@ka-libs/crypto';
 
 // Param: plainData, RSA publicKey (PEM format)
 const { data, valid } = await encrypt('any type of data', publicKey);
@@ -71,7 +71,7 @@ const { data, valid } = await encrypt('any type of data', publicKey);
 ### 3\. Hybrid Decrypt \(RSA \+ AES\)
 
 ```js
-import { decrypt } from 'ka-crypto';
+import { decrypt } from '@ka-libs/crypto';
 
 // Param: data, valid, RSA privateKey (PEM format)
 const plainData = await decrypt(data, valid, privateKey);
@@ -85,20 +85,20 @@ Support independent use of single encryption and decryption algorithm, flexible 
 ### AES Encrypt / Decrypt \(AES\-256\-GCM\)
 
 ```js
-import { aesEncrypt, aesDecrypt } from 'ka-crypto';
+import { aesEncrypt, aesDecrypt } from '@ka-libs/crypto';
 
 // AES encryption
-const aesResult = aesEncrypt(plainData, aesKey, iv);
+const aesResult = aesEncrypt(plainData);
 
 // AES decryption
-const originText = aesDecrypt(cipherText, aesKey, iv, tag);
+const originText = aesDecrypt(cipherText, payload);
 
 ```
 
 ### RSA Encrypt / Decrypt \(RSA\-OAEP\-SHA1\)
 
 ```js
-import { rsaEncrypt, rsaDecrypt } from 'ka-crypto';
+import { rsaEncrypt, rsaDecrypt } from '@ka-libs/crypto';
 
 // RSA public key encryption
 const rsaCipher = rsaEncrypt(plainData, publicKey);
@@ -113,7 +113,7 @@ const originData = rsaDecrypt(rsaCipher, privateKey);
 High\-quality pseudo\-random byte generation based on Mersenne Twister algorithm, used for custom IV / key random filling, consistent random logic across Node\.js and browsers\.
 
 ```js
-import { getRandomValues } from 'ka-crypto';
+import { getRandomValues } from '@ka-libs/crypto';
 
 // Fill Uint8Array with secure random bytes (0-255)
 const buf = new Uint8Array(16);
@@ -138,13 +138,13 @@ getRandomValues(buf);
 Generate standard **RFC4122 Version 4 UUID**, based on internal Mersenne Twister random bytes, cross\-environment consistent and verifiable\.
 
 ```js
-import { getUUID } from 'ka-crypto';
+import { uuidv4 } from '@ka-libs/crypto';
 
 // Standard UUID (with dash)
-const uuid = getUUID(false); 
+const uuid = uuidv4(false); 
 
 // Simplified UUID (no dash)
-const simpleUuid = getUUID(true);
+const simpleUuid = uuidv4(true);
 
 ```
 
@@ -185,7 +185,7 @@ Quickly generate standard RSA PEM key pairs \(public key \+ private key\) and au
 ### Usage
 
 ```js
-import { exportKeyPairs } from 'ka-crypto';
+import { exportKeyPairs } from '@ka-libs/crypto';
 
 // Param: distPath (local folder path)
 await exportKeyPairs('./keys');
@@ -217,12 +217,11 @@ After successful execution, two standard PEM key files will be generated in the 
 Unified transmission structure, directly JSON serializable for PHP backend docking:
 
 ```ts
+type AesPayload = Base64UrlString // Base64 from Combined ArrayBuffer: AesKey(32) + AesIv(12) + AesTag(16)
+
 interface CipherData {
     data: string;       // AES encrypted ciphertext (base64)
-    valid: {
-        key: string;    // RSA-OAEP-SHA1 encrypted AES key (base64)
-        iv: string;     // AES-256-GCM initialization vector (base64)
-    },
+    valid: string;      // RSA-OAEP-SHA1 encrypted AES Payload (base64)
 }
 
 ```
