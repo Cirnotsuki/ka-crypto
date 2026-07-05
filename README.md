@@ -4,7 +4,7 @@
 
 **Zero\-dependency cross\-platform RSA \+ AES hybrid encryption utility for Node\.js \& Browser, fully compatible with PHP RSA\-OAEP\-SHA1\.**
 
-**GitHub:**[https://github\.com/Cirnotsuki/ka\-crypto](https://github.com/Cirnotsuki/@ka-libs/crypto)
+**GitHub:**[https://github\.com/Cirnotsuki/ka\-crypto](https://github.com/Cirnotsuki/ka-crypto)
 
 Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\. Lightweight and standard\-compliant\.
 
@@ -88,10 +88,10 @@ Support independent use of single encryption and decryption algorithm, flexible 
 import { aesEncrypt, aesDecrypt } from '@ka-libs/crypto';
 
 // AES encryption
-const aesResult = aesEncrypt(plainData);
+const { data, payload } = await aesEncrypt('any type of data');
 
 // AES decryption
-const originText = aesDecrypt(cipherText, payload);
+const originData = aesDecrypt(cipherText, payload);
 
 ```
 
