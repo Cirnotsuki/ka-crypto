@@ -1,6 +1,6 @@
 # README\.md
 
-# ka\-crypto
+# @ka\-libs/crypto
 
 **Zero\-dependency cross\-platform RSA \+ AES hybrid encryption utility for Node\.js \& Browser, fully compatible with PHP RSA\-OAEP\-SHA1\.**
 
@@ -46,17 +46,68 @@ Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\.
 npm install @ka-libs/crypto
 ```
 
+# CLI Scripts 使用文档
+
+## 🛠️ CLI Scripts
+
+Built\-in command\-line utilities for quick key generation and UUID creation, no extra code needed\.
+
+### Generate RSA Key Pairs
+
+```bash
+# Generate PEM key pairs to specified directory
+npm run keyPairs -- ./keys
+```
+
+- **Parameter**: Target directory path \(relative or absolute\)
+
+- **Output**: public\.pem \+ private\.pem in the specified directory
+
+- **Auto\-create**: Directory will be created recursively if it doesn't exist
+
+- **⚠️ Required**: Must specify output directory, otherwise exits with error
+
+### Generate UUID
+
+```bash
+# Print a standard RFC4122 v4 UUID to stdout
+npm run uuid
+```
+
+- **Output**: Standard UUID with dashes \(e\.g\., 550e8400\-e29b\-41d4\-a716\-446655440000\)
+
+- **Scenario**: Suitable for shell scripting, CI/CD pipelines, or quick ID generation
+
 ## 🚀 Quick Usage
 
-### 1\. Generate RSA Key Pairs
+### 1\. Generate Key Pairs (Multi-Format)
+
+`keyPairs()` supports three export formats via optional parameter, defaulting to PEM. Format is automatically inferred from `CryptoKey.type`, no manual type specification needed.
+
+**Parameters**
+
+- `format?: "pem" | "jwk" | "der"` — Export format, defaults to `"pem"` when omitted
 
 ```js
 import { keyPairs } from '@ka-libs/crypto';
 
-// Return RSA public key / private key (PEM format)
-const [publicKey, privateKey] = await keyPairs();
+// PEM format (default)
+const [publicPem, privatePem] = await keyPairs();
+const [publicPem2, privatePem2] = await keyPairs("pem");
 
+// JWK format
+const [publicJwk, privateJwk] = await keyPairs("jwk");
+
+// DER format (ArrayBuffer)
+const [publicDer, privateDer] = await keyPairs("der");
 ```
+
+| Format  | Return Type               | Description                     |
+| :------ | :------------------------ | :------------------------------ |
+| `pem`   | `[string, string]`        | Standard PEM encoded keys       |
+| `jwk`   | `[JsonWebKey, JsonWebKey]`| JSON Web Key objects            |
+| `der`   | `[ArrayBuffer, ArrayBuffer]` | Raw DER binary (SPKI / PKCS#8) |
+
 
 ### 2\. Hybrid Encrypt \(RSA \+ AES\)
 

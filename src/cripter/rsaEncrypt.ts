@@ -6,8 +6,8 @@ import { getSubtle } from "../core/getSubtle";
  * RSA加密
  */
 export async function rsaEncrypt<T>(data: T, publicKey: Base64URLString, bufferMode: true): Promise<ArrayBuffer>;
-export async function rsaEncrypt<T>(data: T, publicKey: Base64URLString, bufferMode: false): Promise<Base64URLString>;
-export async function rsaEncrypt<T>(data: T, publicKey: Base64URLString, bufferMode: boolean = false) {
+export async function rsaEncrypt<T>(data: T, publicKey: Base64URLString): Promise<Base64URLString>;
+export async function rsaEncrypt<T>(data: T, publicKey: Base64URLString, bufferMode?: boolean) {
 	const key = await importPublicKey(publicKey);
 	let encodeData;
 	if (data instanceof ArrayBuffer) {
