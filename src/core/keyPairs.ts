@@ -31,7 +31,7 @@ export async function keyPairs(format?: "pem" | "jwk" | "der") {
 			name: "RSA-OAEP",
 			modulusLength: 2048,
 			publicExponent: new Uint8Array([1, 0, 1]),
-			hash: "SHA-256", // ✅ 改用 SHA-256
+			hash: "SHA-1"
 		},
 		true,
 		["encrypt", "decrypt"],

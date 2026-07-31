@@ -1,6 +1,6 @@
 {
   "name": "@ka-libs/crypto",
-  "version": "1.4.2",
+  "version": "1.4.6",
   "description": "Cross-environment crypto utility for Node.js & Browser, implement RSA-AES hybrid encryption based on native Web Crypto / Node.js crypto without third-party dependencies.",
   "scripts": {
     "uuid": "node ./cmd/uuid.js",
@@ -17,50 +17,65 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.cjs"
     },
-    "./aes-decrypt": {
-      "import": "./dist/esm/exports/aes-decrypt.js"
-    },
-    "./aes-encrypt": {
-      "import": "./dist/esm/exports/aes-encrypt.js"
-    },
-    "./array-buffer-to-base64": {
-      "import": "./dist/esm/exports/array-buffer-to-base64.js"
-    },
-    "./base64-cleaner": {
-      "import": "./dist/esm/exports/base64-cleaner.js"
-    },
-    "./base64-to-array-buffer": {
-      "import": "./dist/esm/exports/base64-to-array-buffer.js"
-    },
-    "./decrypt": {
-      "import": "./dist/esm/exports/decrypt.js"
-    },
-    "./encrypt": {
-      "import": "./dist/esm/exports/encrypt.js"
-    },
-    "./export-key-pairs": {
-      "import": "./dist/esm/exports/export-key-pairs.js"
+    "./key-pairs": {
+      "import": "./dist/esm/core/keyPairs.js",
+      "types": "./dist/types/keyPairs.d.ts"
     },
     "./get-random-bytes": {
-      "import": "./dist/esm/exports/get-random-bytes.js"
+      "import": "./dist/esm/lib/getRandomBytes.js",
+      "types": "./dist/types/getRandomBytes.d.ts"
+    },
+    "./array-buffer-to-base64": {
+      "import": "./dist/esm/lib/arrayBufferToBase64.js",
+      "types": "./dist/types/arrayBufferToBase64.d.ts"
+    },
+    "./base64-to-array-buffer": {
+      "import": "./dist/esm/lib/base64ToArrayBuffer.js",
+      "types": "./dist/types/base64ToArrayBuffer.d.ts"
     },
     "./get-random-values": {
-      "import": "./dist/esm/exports/get-random-values.js"
+      "import": "./dist/esm/lib/getRandomValues.js",
+      "types": "./dist/types/getRandomValues.d.ts"
     },
-    "./key-pairs": {
-      "import": "./dist/esm/exports/key-pairs.js"
+    "./export-key-pairs": {
+      "import": "./dist/esm/lib/exportKeyPairs.js",
+      "types": "./dist/types/exportKeyPairs.d.ts"
     },
-    "./rsa-decrypt": {
-      "import": "./dist/esm/exports/rsa-decrypt.js"
-    },
-    "./rsa-encrypt": {
-      "import": "./dist/esm/exports/rsa-encrypt.js"
+    "./base64-cleaner": {
+      "import": "./dist/esm/lib/base64Cleaner.js",
+      "types": "./dist/types/base64Cleaner.d.ts"
     },
     "./uuidv4": {
-      "import": "./dist/esm/exports/uuidv4.js"
+      "import": "./dist/esm/lib/uuidv4.js",
+      "types": "./dist/types/uuidv4.d.ts"
     },
     "./uuidv5": {
-      "import": "./dist/esm/exports/uuidv5.js"
+      "import": "./dist/esm/lib/uuidv5.js",
+      "types": "./dist/types/uuidv5.d.ts"
+    },
+    "./encrypt": {
+      "import": "./dist/esm/cripter/encrypt.js",
+      "types": "./dist/types/encrypt.d.ts"
+    },
+    "./decrypt": {
+      "import": "./dist/esm/cripter/decrypt.js",
+      "types": "./dist/types/decrypt.d.ts"
+    },
+    "./rsa-encrypt": {
+      "import": "./dist/esm/cripter/rsaEncrypt.js",
+      "types": "./dist/types/rsaEncrypt.d.ts"
+    },
+    "./rsa-decrypt": {
+      "import": "./dist/esm/cripter/rsaDecrypt.js",
+      "types": "./dist/types/rsaDecrypt.d.ts"
+    },
+    "./aes-encrypt": {
+      "import": "./dist/esm/cripter/aesEncrypt.js",
+      "types": "./dist/types/aesEncrypt.d.ts"
+    },
+    "./aes-decrypt": {
+      "import": "./dist/esm/cripter/aesDecrypt.js",
+      "types": "./dist/types/aesDecrypt.d.ts"
     }
   },
   "files": [
