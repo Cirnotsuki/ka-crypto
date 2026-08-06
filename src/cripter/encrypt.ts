@@ -17,8 +17,6 @@ export async function encrypt<T>(data: T, publicKey: string, bufferMode?: boolea
 		const bufAes = await aesEncrypt(data, true);
 		const bufValid = await rsaEncrypt(bufAes.payload, publicKey, true);
 
-		console.log(bufValid.byteLength)
-			;
 		const combinated = new Uint8Array(bufValid.byteLength + bufAes.data.byteLength);
 		combinated.set(new Uint8Array(bufValid), 0);
 		combinated.set(new Uint8Array(bufAes.data), bufValid.byteLength);

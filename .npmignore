@@ -1,4 +1,9 @@
+keys/
 node_modules/
 src/
-rollup.config.js
+.gitignore
 package-lock.json
+rollup.config.js
+tsconfig.build.json
+tsconfig.json
+tsconfig.types.json
