@@ -176,6 +176,77 @@ function binlMD5(x: number[], len: number): number[] {
 }
 
 /**
+ * Convert a String or Uint8Array to an array of little-endian words.
+ * This avoids the overhead of converting binary data to intermediate strings.
+ */
+function input2bin1(input: string | Uint8Array): number[] {
+	const len = input.length;
+	const output: number[] = [];
+	const isString = typeof input === 'string';
+	// 预分配空间
+	output[len >> 2] = 0;
+	for (let i = 0; i < output.length; i += 1) {
+		output[i] = 0;
+	}
+	const length8: number = len * 8;
+	for (let i = 0; i < length8; i += 8) {
+		const num = isString ? input.charCodeAt(i >> 3) : input[i >> 3];
+		output[i >> 5] |= (num & 0xff) << (i % 32);
+	}
+	return output;
+}
+
+/**
+ * Calculate the MD5 of binary data (String or Uint8Array)
+ * Returns raw byte string
+ */
+function binMD5(input: string | Uint8Array): number[] {
+	return binlMD5(input2bin1(input), input.length * 8);
+}
+
+/**
+ * Calculates the HMAC-MD5 of a key and binary data
+ * Key can be string or Uint8Array, data must be Uint8Array
+ */
+function binHMACMD5(key: string | Uint8Array, data: string | Uint8Array): number[] {
+	let bkey: number[] = input2bin1(key);
+	const ipad: number[] = [];
+	const opad: number[] = [];
+	let hash: number[];
+	ipad[15] = opad[15] = 0;
+
+	if (bkey.length > 16) {
+		bkey = binlMD5(bkey, key.length * 8);
+	}
+	for (let i = 0; i < 16; i += 1) {
+		ipad[i] = bkey[i] ^ 0x36363636;
+		opad[i] = bkey[i] ^ 0x5c5c5c5c;
+	}
+
+	const dataBinl = input2bin1(data);
+	hash = binlMD5(ipad.concat(dataBinl), 512 + data.length * 8);
+	return binlMD5(opad.concat(hash), 512 + 128);
+}
+
+/**
+ * Convert little-endian words to a hex string
+ */
+function binl2hex(input: number[]): string {
+	const hexTab = '0123456789abcdef';
+	let output = '';
+
+	const length32 = input.length * 32;
+
+	for (let i = 0; i < length32; i += 8) {
+		const x = (input[i >> 5] >>> (i % 32)) & 0xff;
+
+		output += hexTab.charAt((x >>> 4) & 0x0f) + hexTab.charAt(x & 0x0f);
+	}
+
+	return output;
+}
+
+/**
  * Convert an array of little-endian words to a string
  */
 function binl2rstr(input: number[]): string {
@@ -188,125 +259,64 @@ function binl2rstr(input: number[]): string {
 	return output;
 }
 
-/**
- * Convert a raw string to an array of little-endian words
- * Characters >255 have their high-byte silently ignored.
- */
-function rstr2binl(input: string): number[] {
-	let i: number;
-	const output: number[] = [];
-	output[(input.length >> 2) - 1] = undefined as unknown as number;
-	for (i = 0; i < output.length; i += 1) {
-		output[i] = 0;
+function binl2u8a(input: number[]): Uint8Array {
+	const length = input.length * 4;
+	const output = new Uint8Array(length);
+
+	for (let i = 0; i < length; i += 1) {
+		output[i] = (input[i >> 2] >>> ((i % 4) * 8)) & 0xff;
 	}
-	const length8: number = input.length * 8;
-	for (i = 0; i < length8; i += 8) {
-		output[i >> 5] |= (input.charCodeAt(i / 8) & 0xff) << (i % 32);
-	}
+
 	return output;
 }
 
 /**
- * Calculate the MD5 of a raw string
- */
-function rstrMD5(s: string): string {
-	return binl2rstr(binlMD5(rstr2binl(s), s.length * 8));
-}
-
-/**
- * Calculates the HMAC-MD5 of a key and some data (raw strings)
- */
-function rstrHMACMD5(key: string, data: string): string {
-	let i: number;
-	let bkey: number[] = rstr2binl(key);
-	const ipad: number[] = [];
-	const opad: number[] = [];
-	let hash: number[];
-	ipad[15] = opad[15] = undefined as unknown as number;
-	if (bkey.length > 16) {
-		bkey = binlMD5(bkey, key.length * 8);
-	}
-	for (i = 0; i < 16; i += 1) {
-		ipad[i] = bkey[i] ^ 0x36363636;
-		opad[i] = bkey[i] ^ 0x5c5c5c5c;
-	}
-	hash = binlMD5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
-	return binl2rstr(binlMD5(opad.concat(hash), 512 + 128));
-}
-
-/**
- * Convert a raw string to a hex string
- */
-function rstr2hex(input: string): string {
-	const hexTab: string = '0123456789abcdef';
-	let output: string = '';
-	let x: number;
-	let i: number;
-	for (i = 0; i < input.length; i += 1) {
-		x = input.charCodeAt(i);
-		output += hexTab.charAt((x >>> 4) & 0x0f) + hexTab.charAt(x & 0x0f);
-	}
-	return output;
-}
-
-/**
- * Encode a string as UTF-8
- * Returns a raw byte string where each character represents one UTF-8 byte.
- */
-function str2rstrUTF8(input: string): string {
-	const encoder = new TextEncoder();
-	const bytes = encoder.encode(input);
-
-	// 使用 Array + join 避免大量字符串拼接
-	const chars = new Array(bytes.length);
-	for (let i = 0; i < bytes.length; i++) {
-		chars[i] = String.fromCharCode(bytes[i]);
-	}
-	return chars.join('');
-}
-
-/**
- * Encodes input string as raw MD5 string
- */
-function rawMD5(s: string): string {
-	return rstrMD5(str2rstrUTF8(s));
-}
-
-/**
- * Encodes input string as Hex encoded string
- */
-function hexMD5(s: string): string {
-	return rstr2hex(rawMD5(s));
-}
-
-/**
- * Calculates the raw HMAC-MD5 for the given key and data
- */
-function rawHMACMD5(k: string, d: string): string {
-	return rstrHMACMD5(str2rstrUTF8(k), str2rstrUTF8(d));
-}
-
-/**
- * Calculates the Hex encoded HMAC-MD5 for the given key and data
- */
-function hexHMACMD5(k: string, d: string): string {
-	return rstr2hex(rawHMACMD5(k, d));
-}
-
-/**
- * Calculates MD5 value for a given string.
+ * Calculates MD5 value for a given string or binary data.
  * If a key is provided, calculates the HMAC-MD5 value.
  * Returns a Hex encoded string unless the raw argument is given.
+ *
+ * @param input - The data to hash (string, Uint8Array, or ArrayBuffer)
+ * @param key - Optional key for HMAC-MD5 (string or Uint8Array)
+ * @param output - "binary" returns raw binary string, "raw" returns Uint8Array
  */
-export function md5(string: string, key?: string, raw?: boolean): string {
-	if (!key) {
-		if (!raw) {
-			return hexMD5(string);
+
+const MD5_OUTPUTS = ['hex', 'raw', 'binary'] as const;
+
+export function md5(input: string | Uint8Array): string;
+export function md5(input: string | Uint8Array, output: 'hex' | 'binary'): string;
+export function md5(input: string | Uint8Array, output: 'raw'): Uint8Array;
+export function md5(input: string | Uint8Array, key: string | Uint8Array): string;
+export function md5(input: string | Uint8Array, key: string | Uint8Array, output: 'hex' | 'binary'): string;
+export function md5(input: string | Uint8Array, key: string | Uint8Array, output: 'raw'): Uint8Array;
+
+export function md5(input: string | Uint8Array, arg1?: string | Uint8Array, arg2: 'hex' | 'raw' | 'binary' = 'hex'): string | Uint8Array {
+	let key: string | Uint8Array | undefined;
+	let output: 'hex' | 'raw' | 'binary' = 'hex';
+
+	if (arguments.length === 2) {
+		if (typeof arg1 === 'string' && MD5_OUTPUTS.includes(arg1 as (typeof MD5_OUTPUTS)[number])) {
+			output = arg1 as typeof output;
+		} else {
+			key = arg1;
 		}
-		return rawMD5(string);
 	}
-	if (!raw) {
-		return hexHMACMD5(key, string);
+
+	if (arguments.length === 3) {
+		key = arg1;
+		output = arg2;
 	}
-	return rawHMACMD5(key, string);
+
+	const bin1 = key ? binHMACMD5(key, input) : binMD5(input);
+
+	switch (output) {
+		case 'raw':
+			return binl2u8a(bin1);
+
+		case 'binary':
+			return binl2rstr(bin1);
+
+		case 'hex':
+		default:
+			return binl2hex(bin1);
+	}
 }

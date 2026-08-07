@@ -6,39 +6,41 @@
 
 **GitHub:**[https://github\.com/Cirnotsuki/ka\-crypto](https://github.com/Cirnotsuki/ka-crypto)
 
-Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\. Lightweight and standard\-compliant\.
+Built on native Web Crypto / Node\.js Crypto API with no third\-party dependencies\. Lightweight and fully compliant with standard cryptographic specifications\.
 
-**Core advantage: 100% algorithm consistent with PHP openssl OAEP\-SHA1**, perfectly solving front\-end \& PHP backend encryption docking issues\.
+**Core Advantage: 100% algorithm consistency with PHP openssl OAEP\-SHA1**, perfectly solving encryption compatibility issues between frontend and PHP backend\.
 
 ## ✨ Features
 
-- **Cross\-platform**: Support Node\.js \& all modern browsers
+- **Cross\-platform**: Supports Node\.js and all modern desktop/mobile browsers
 
-- **Zero dependency**: Only rely on system native crypto API
+- **Zero dependency**: Relies purely on system\-native crypto APIs
 
-- **PHP full compatible**: RSA\-OAEP\-SHA1 strictly matches PHP openssl default OAEP mode
+- **Full PHP compatibility**: RSA\-OAEP\-SHA1 strictly matches PHP OpenSSL default OAEP mode
 
 - **Secure hybrid encryption**: RSA key exchange \+ AES\-256\-GCM authenticated encryption
 
-- **Tamper\-proof**: GCM auth tag ensures data integrity
+- **Tamper\-proof**: GCM authentication tag guarantees data integrity
 
-- **Unified structure**: Fixed cipher format for front\-end \& PHP backend interaction
+- **Unified transmission structure**: Fixed cipher format for consistent frontend \& PHP backend interaction
 
 - **Standard key support**: Compatible with PKCS\#1 / PKCS\#8 PEM RSA keys
 
-- **Independent crypto methods**: Expose standalone RSA / AES encrypt \& decrypt functions for flexible usage
+- **Comprehensive crypto methods**: Built\-in symmetric/asymmetric encryption, hash digest, random generation, UUID generation and binary conversion utilities
+
+- **Full TypeScript support**: Complete type declarations and intelligent type inference
 
 ## 🔐 Encryption Flow \(PHP Consistent\)
 
-1. Randomly generate AES\-256\-GCM session key and IV
+1. Randomly generate an AES\-256\-GCM session key and initialization vector \(IV\)
 
-2. Encrypt plainData with AES\-256\-GCM, get ciphertext and auth tag
+2. Encrypt plaintext data via AES\-256\-GCM to obtain ciphertext and authentication tag
 
-3. Encrypt AES session key via **RSA\-OAEP\-SHA1** \(PHP standard algorithm\)
+3. Encrypt the AES session key with **RSA\-OAEP\-SHA1** \(PHP standard algorithm\)
 
-4. Package all fields into unified cipher object for transmission
+4. Package all encrypted fields into a unified cipher object for network transmission
 
-5. Decrypt: Restore AES key with RSA private key, then decrypt AES ciphertext
+5. Decryption process: Recover the AES key via RSA private key, then decrypt the AES ciphertext
 
 ## 📦 Installation
 
@@ -46,49 +48,61 @@ Built on native Web Crypto / Node\.js Crypto API, no third\-party dependencies\.
 npm install @ka-libs/crypto
 ```
 
-# CLI Scripts 使用文档
+# CLI Scripts Documentation
 
 ## 🛠️ CLI Scripts
 
-Built\-in command\-line utilities for quick key generation and UUID creation, no extra code needed\.
+Built\-in command\-line tools for fast RSA key generation and UUID creation without extra coding\.
 
 ### Generate RSA Key Pairs
 
-```bash
-# Generate PEM key pairs to specified directory
+```Plain Text
 npm run keyPairs -- ./keys
 ```
 
 - **Parameter**: Target directory path \(relative or absolute\)
 
-- **Output**: public\.pem \+ private\.pem in the specified directory
+- **Output**: `public.pem` and `private.pem` saved in the target directory
 
-- **Auto\-create**: Directory will be created recursively if it doesn't exist
+- **Auto\-create**: The target directory will be recursively created if not exists
 
-- **⚠️ Required**: Must specify output directory, otherwise exits with error
+- **⚠️ Required**: Target directory must be specified, otherwise the command will exit with an error
 
 ### Generate UUID
 
-```bash
-# Print a standard RFC4122 v4 UUID to stdout
+```Plain Text
 npm run uuid
 ```
 
-- **Output**: Standard UUID with dashes \(e\.g\., 550e8400\-e29b\-41d4\-a716\-446655440000\)
+- **Output**: Standard RFC4122 v4 UUID with dashes \(e\.g\., 550e8400\-e29b\-41d4\-a716\-446655440000\)
 
-- **Scenario**: Suitable for shell scripting, CI/CD pipelines, or quick ID generation
+- **Scenario**: Suitable for shell scripting, CI/CD pipelines and rapid unique ID generation
 
-## 🚀 Quick Usage
+## 🚀 Quick Usage \& Full API Docs
 
-### 1\. Generate Key Pairs (Multi-Format)
+All functions support complete TypeScript type inference\. Below are full type declarations, parameter descriptions and practical usage examples\.
 
-`keyPairs()` supports three export formats via optional parameter, defaulting to PEM. Format is automatically inferred from `CryptoKey.type`, no manual type specification needed.
+### 1\. RSA Key Pair Generation \(Multi\-Format\)
 
-**Parameters**
+Supports three export formats: `pem / jwk / der` with strict type constraints\.
 
-- `format?: "pem" | "jwk" | "der"` — Export format, defaults to `"pem"` when omitted
+#### Type Declaration
 
-```js
+#### Type \& Parameter Description
+
+Generate RSA key pairs with multi\-format output support, with full function overloading:
+
+- **No parameter**: Returns PEM format key pair `Promise<[string, string]>`
+
+- **format = "pem"**: Returns standard PEM key pair `Promise<[string, string]>`
+
+- **format = "jwk"**: Returns JWK format key pair `Promise<[JsonWebKey, JsonWebKey]>`
+
+- **format = "der"**: Returns raw DER binary key pair `Promise<[ArrayBuffer, ArrayBuffer]>`
+
+#### Usage
+
+```Plain Text
 import { keyPairs } from '@ka-libs/crypto';
 
 // PEM format (default)
@@ -98,199 +112,267 @@ const [publicPem2, privatePem2] = await keyPairs("pem");
 // JWK format
 const [publicJwk, privateJwk] = await keyPairs("jwk");
 
-// DER format (ArrayBuffer)
+// DER format (ArrayBuffer binary)
 const [publicDer, privateDer] = await keyPairs("der");
 ```
 
-| Format  | Return Type               | Description                     |
-| :------ | :------------------------ | :------------------------------ |
-| `pem`   | `[string, string]`        | Standard PEM encoded keys       |
-| `jwk`   | `[JsonWebKey, JsonWebKey]`| JSON Web Key objects            |
-| `der`   | `[ArrayBuffer, ArrayBuffer]` | Raw DER binary (SPKI / PKCS#8) |
+|**Format**|**Return Type**|**Description**|
+|---|---|---|
+|`pem`|`[string, string]`|Standard PEM\-encoded RSA key pair|
+|`jwk`|`[JsonWebKey, JsonWebKey]`|JSON Web Key format objects|
+|`der`|`[ArrayBuffer, ArrayBuffer]`|Raw DER binary keys \(SPKI / PKCS\#8\)|
 
+### 2\. Export RSA Keys to Local File \(Node\.js Only\)
 
-### 2\. Hybrid Encrypt \(RSA \+ AES\)
+#### Type Declaration
 
-```js
-import { encrypt } from '@ka-libs/crypto';
+#### Type \& Parameter Description
 
-// Param: plainData, RSA publicKey (PEM format)
-const { data, valid } = await encrypt('any type of data', publicKey);
+Export generated RSA PEM key pair to local directory \(Node\.js only\)\. Accepts a single string parameter`dist` for target directory path, returns `Promise<void>`\.
 
+#### Usage
+
+```Plain Text
+import { exportKeyPairs } from '@ka-libs/crypto';
+await exportKeyPairs('./keys');
 ```
 
-### 3\. Hybrid Decrypt \(RSA \+ AES\)
+- **dist**: Local directory path for storing key files \(relative or absolute\)
 
-```js
-import { decrypt } from '@ka-libs/crypto';
+- **Output**: Automatically generates `public.pem` and `private.pem`
 
-// Param: data, valid, RSA privateKey (PEM format)
-const plainData = await decrypt(data, valid, privateKey);
+- **Restriction**: Unavailable in browser environments; only for Node\.js local development and server deployment
 
+### 3\. Hybrid Encrypt / Decrypt \(RSA\+AES, PHP Compatible\)
+
+#### Type Declaration
+
+#### Type \& Parameter Description
+
+Hybrid encryption function overloads:
+
+- **bufferMode = true**: Accepts generic data and public key string, returns `Promise<ArrayBuffer | null>` binary cipher
+
+- **bufferMode = false**: Accepts generic data and public key string, returns structured object `Promise<{ valid: string; data: string } | null>`
+
+Hybrid decryption function overloads:
+
+- Accepts `ArrayBuffer` cipher data and private key string, returns decrypted plaintext `Promise<any>`
+
+- Accepts Base64 encoded `data` and `valid` payload with private key string, returns decrypted plaintext `Promise<any>`
+
+#### Usage
+
+```Plain Text
+import { encrypt, decrypt } from '@ka-libs/crypto';
+
+// String mode (default, suitable for front-backend transmission)
+const cipher = await encrypt('test data', publicPem, false);
+// Binary buffer mode (suitable for file and binary data encryption)
+const bufferCipher = await encrypt('test data', publicPem, true);
+
+// Decryption
+const originData = await decrypt(cipher.data, cipher.valid, privatePem);
 ```
 
-## 🧩 Standalone AES / RSA Methods
+### 4\. Standalone RSA Encryption \& Decryption
 
-Support independent use of single encryption and decryption algorithm, flexible for custom business scenarios\.
+#### Type Declaration
 
-### AES Encrypt / Decrypt \(AES\-256\-GCM\)
+#### Type \& Parameter Description
 
-```js
-import { aesEncrypt, aesDecrypt } from '@ka-libs/crypto';
+RSA public key encryption overloads:
 
-// AES encryption
-const { data, payload } = await aesEncrypt('any type of data');
+- **bufferMode = true**: Encrypt input data with public key, returns raw `Promise<ArrayBuffer>`
 
-// AES decryption
-const originData = aesDecrypt(cipherText, payload);
+- **No bufferMode**: Encrypt input data with public key, returns Base64 string `Promise<Base64URLString>`
 
-```
+RSA private key decryption overloads:
 
-### RSA Encrypt / Decrypt \(RSA\-OAEP\-SHA1\)
+- **sourceIsBuffer = true**: Decrypt binary buffer input with private key, returns `Promise<ArrayBuffer>`
 
-```js
+- **No sourceIsBuffer**: Decrypt Base64 or buffer input with private key, returns parsed plaintext `Promise<any>`
+
+#### Usage
+
+```Plain Text
 import { rsaEncrypt, rsaDecrypt } from '@ka-libs/crypto';
 
-// RSA public key encryption
-const rsaCipher = rsaEncrypt(plainData, publicKey);
+// Output Base64 encoded string
+const cipher = await rsaEncrypt('hello world', publicPem);
+// Output raw ArrayBuffer binary
+const bufferCipher = await rsaEncrypt('hello world', publicPem, true);
 
-// RSA private key decryption
-const originData = rsaDecrypt(rsaCipher, privateKey);
-
+// Decrypt data
+const res1 = await rsaDecrypt(cipher, privatePem);
+const res2 = await rsaDecrypt(bufferCipher, privatePem, true);
 ```
 
-### Random Bytes Generator
+### 5\. Standalone AES\-256\-GCM Encryption \& Decryption
 
-High\-quality pseudo\-random byte generation based on Mersenne Twister algorithm, used for custom IV / key random filling, consistent random logic across Node\.js and browsers\.
+#### Type Declaration
 
-```js
-import { getRandomValues } from '@ka-libs/crypto';
+#### Type \& Parameter Description
 
-// Fill Uint8Array with secure random bytes (0-255)
-const buf = new Uint8Array(16);
+AES\-256\-GCM encryption supports multiple parameter combinations and mode switching:
+
+- **Only data input**: Auto\-generate AES key and IV, return Base64 structured payload
+
+- **data \+ bufferMode=false**: Return Base64 encoded `{ data, payload }`
+
+- **data \+ bufferMode=true**: Return raw ArrayBuffer `{ data, payload }`
+
+- **data \+ custom aesKey \+ aesIv**: Use manually specified key and IV, support both Base64 and buffer output modes
+
+AES decryption accepts string or ArrayBuffer cipher data and corresponding payload, returns decrypted original data`Promise<any>`\.
+
+#### Usage
+
+```Plain Text
+import { aesEncrypt, aesDecrypt } from '@ka-libs/crypto';
+
+// Auto-generate AES key and IV
+const aesCipher = await aesEncrypt('aes test data');
+// Custom AES key & IV with binary buffer mode
+const aesBufferCipher = await aesEncrypt('aes test data', key, iv, true);
+
+// AES decryption
+const origin = await aesDecrypt(aesCipher.data, aesCipher.payload);
+```
+
+### 6\. Random Bytes Generation Utilities
+
+#### Type Declaration
+
+#### Type \& Parameter Description
+
+- **getRandomBytes**: Accepts optional numeric `length` parameter, returns random `Uint8Array<ArrayBuffer>` with specified byte length
+
+- **getRandomValues**: Accepts a binary buffer source array, fills it with secure random bytes and returns the original mutated array
+
+#### Usage
+
+```Plain Text
+import { getRandomBytes, getRandomValues } from '@ka-libs/crypto';
+
+// Generate random bytes with specified length
+const bytes = getRandomBytes(16);
+// Fill binary array with secure random values
+const buf = new Uint8Array(32);
 getRandomValues(buf);
-
 ```
 
-**Function Description**
+### 7\. Binary \& Base64 Conversion Tools
 
-- Based on Mersenne Twister pseudo\-random algorithm, stable and high randomness
+#### Type Declaration
 
-- Cross\-environment consistency: unified random byte generation logic for browser and Node\.js
+#### Type \& Parameter Description
 
-- Param: `Uint8Array` — Binary array to be filled with random bytes
+- **arrayBufferToBase64**: Accepts `ArrayBuffer` or `Uint8Array` binary input, returns Base64 encoded string
 
-- Param: `Uint8Array` — Binary array to be filled with random bytes
+- **base64ToArrayBuffer**: Accepts Base64 URL string input, returns decoded `ArrayBuffer` binary data
 
-- Return: Filled original Uint8Array \(mutate in place\)
+- **base64Cleaner**: Accepts raw Base64 string with line breaks or invalid characters, returns standardized clean Base64 string
 
-### UUID Generator \(RFC4122 Standard\)
+#### Usage
 
-Generate standard **RFC4122 Version 4 UUID**, based on internal Mersenne Twister random bytes, cross\-environment consistent and verifiable\.
+```Plain Text
+import { arrayBufferToBase64, base64ToArrayBuffer, base64Cleaner } from '@ka-libs/crypto';
 
-```js
-import { uuidv4 } from '@ka-libs/crypto';
+// Convert binary buffer to Base64 string
+const base64 = arrayBufferToBase64(buffer);
+// Convert Base64 string to binary buffer
+const buffer = base64ToArrayBuffer(base64Str);
+// Clean invalid characters and line breaks in Base64 content
+const cleanStr = base64Cleaner(rawBase64);
+```
 
-// Standard UUID (with dash)
-const uuid = uuidv4(false); 
+### 8\. Hash Algorithms \(MD5 / SHA Series\)
 
-// Simplified UUID (no dash)
+#### Type Declaration
+
+#### Type \& Parameter Description
+
+**MD5 Function Overloads**: Supports plain input, salt key input, and multi output formats \(hex / binary / raw Uint8Array\)\.
+
+**SHA Series Functions \(sha1 / sha256 / sha384 / sha512\)**: Accepts string or binary Uint8Array data, with optional `raw` boolean flag\. Returns hex string by default, returns raw binary array if `raw=true`\.
+
+**Unified digest Function**: Accepts standard algorithm name \(md5 / sha1 / sha256 / sha384 / sha512\), input data and optional raw flag, supports unified hash calculation entry for all built\-in algorithms\.
+
+#### Usage
+
+```Plain Text
+import { md5, sha256, digest } from '@ka-libs/crypto';
+
+// MD5 hash with salt
+const md5Str = md5('123456', 'salt123');
+// SHA256 hash calculation
+const shaStr = await sha256('test hash');
+// Unified hash function call
+const hash = await digest('sha1', 'test data');
+```
+
+### 9\. UUID Generation \(V4 / V5\)
+
+#### Type Declaration
+
+#### Type \& Parameter Description
+
+#### Usage
+
+```Plain Text
+import { uuidv4, uuidv5 } from '@ka-libs/crypto';
+
+// Standard UUID with hyphens
+const uuid = uuidv4();
+// Simplified 32-bit UUID without hyphens
 const simpleUuid = uuidv4(true);
-
+// UUID v5 generation with custom namespace
+const v5Uuid = await uuidv5('custom-name');
 ```
-
-**Function Description**
-
-- Strictly compliant with **RFC4122 v4 UUID** specification
-
-- Random seed based on Mersenne Twister algorithm, uniform with crypto random logic
-
-- Built\-in format verification, throws error if generated UUID is invalid
-
-- Cross\-environment consistent output for Node\.js and browsers
-
-**Parameters**
-
-- `simplify: boolean`
-
-- `false`\(default\): Return standard UUID with dashes `xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx`
-
-- `true`: Return pure 32\-bit hex string without dashes
-
-**Return Value**
-
-- `string`: Valid RFC4122 UUID string
-
-**Exception**
-
-- Throw `TypeError` when UUID format verification fails
-
-## 🔑 Keypairs Export \(Node Environment Only\)
-
-Built\-in RSA key pair automatic generation \& local file export function,**only available in Node\.js environment**, disabled in browsers \(browser prohibits local file writing\)\.
-
-### Function Description
-
-Quickly generate standard RSA PEM key pairs \(public key \+ private key\) and automatically write them to the specified local directory, convenient for project initialization and backend PHP key deployment\.
-
-### Usage
-
-```js
-import { exportKeyPairs } from '@ka-libs/crypto';
-
-// Param: distPath (local folder path)
-await exportKeyPairs('./keys');
-
-```
-
-### Parameter Explanation
-
-- **distPath**: Local directory path for storing key files \(relative/absolute path supported\)
-
-### Export Result
-
-After successful execution, two standard PEM key files will be generated in the target directory:
-
-- `public.pem`: RSA public key \(for frontend encryption / PHP public key encryption\)
-
-- `private.pem`: RSA private key \(for backend decryption / JS private key decryption\)
-
-### Important Notes
-
-- ❌ **Unavailable in browsers**: Browser sandbox restricts local file system writing, calling this function in browser will throw an error
-
-- ✅ **Only for Node\.js**: Suitable for local development, server initialization key generation
-
-- Generated keys fully comply with **RSA\-OAEP\-SHA1** standard, natively compatible with PHP openssl encryption and decryption
 
 ## 📄 Cipher Structure \(JS \& PHP Interoperable\)
 
-Unified transmission structure, directly JSON serializable for PHP backend docking:
+Unified JSON\-serializable transmission structure for seamless PHP backend integration:
 
-```ts
-type AesPayload = Base64UrlString // Base64 from Combined ArrayBuffer: AesKey(32) + AesIv(12) + AesTag(16)
+```Plain Text
+type AesPayload = Base64UrlString // Combined ArrayBuffer: AesKey(32) + AesIv(12) + AesTag(16)
 
 interface CipherData {
-    data: string;       // AES encrypted ciphertext (base64)
-    valid: string;      // RSA-OAEP-SHA1 encrypted AES Payload (base64)
+    data: string;       // AES encrypted ciphertext (base64 encoded)
+    valid: string;      // RSA-OAEP-SHA1 encrypted AES payload (base64 encoded)
 }
-
 ```
 
-## 🛡️ Algorithm Standard
+## 🛡️ Algorithm Standards
 
-- **AES**: AES\-256\-GCM \(authenticated encryption, anti\-tampering\)
+- **AES**: AES\-256\-GCM \(authenticated encryption with tamper resistance\)
 
 - **RSA**: RSA\-OAEP\-SHA1 \(fully compatible with PHP `openssl_public_encrypt` OAEP mode\)
 
-- **Key Format**: Standard PEM public / private key
+- **Key Format**: Standard PKCS\#1 / PKCS\#8 PEM RSA keys
 
 ## 🌍 Compatibility
 
-- Runtime: Node\.js 16\+, Chrome / Edge / Firefox / Safari latest
+- Runtime: Node\.js 16\+, latest Chrome / Edge / Firefox / Safari browsers
 
-- Backend: PHP 7\.4\+ / PHP 8\.x \(openssl extension required\)
+- Backend: PHP 7\.4\+ / PHP 8\.x \(OpenSSL extension required\)
+
+## 📦 Full Export List
+
+```Plain Text
+export { 
+  aesDecrypt, aesEncrypt, 
+  arrayBufferToBase64, base64Cleaner, base64ToArrayBuffer, 
+  decrypt, digest, encrypt, exportKeyPairs, 
+  getRandomBytes, getRandomValues, 
+  keyPairs, md5, 
+  rsaDecrypt, rsaEncrypt, 
+  sha1, sha256, sha384, sha512, 
+  uuidv4, uuidv5 
+};
+```
 
 ## 📝 License
 
-MIT
+[MIT](LICENSE)

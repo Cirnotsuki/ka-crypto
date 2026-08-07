@@ -18,7 +18,7 @@ function bufferToHex(buffer: ArrayBuffer): string {
 	return chars.join('');
 }
 
-async function digest(algorithm: string, data: string | Uint8Array, raw: boolean) {
+async function digest(algorithm: string, data: string | Uint8Array, raw: boolean): Promise<Uint8Array | string> {
 	const buffer = await getSubtle().digest(algorithm, normalize(data));
 
 	if (raw) {
@@ -28,18 +28,30 @@ async function digest(algorithm: string, data: string | Uint8Array, raw: boolean
 	return bufferToHex(buffer);
 }
 
+export function sha1(data: string | Uint8Array, raw: true): Promise<Uint8Array>;
+export function sha1(data: string | Uint8Array, raw: false): Promise<string>;
+export function sha1(data: string | Uint8Array): Promise<string>;
 export function sha1(data: string | Uint8Array, raw = false) {
-	return digest('SHA-1', data, raw);
+	return raw ? digest('SHA-1', data, true) : digest('SHA-1', data, false);
 }
 
+export function sha256(data: string | Uint8Array, raw: true): Promise<Uint8Array>;
+export function sha256(data: string | Uint8Array, raw: false): Promise<string>;
+export function sha256(data: string | Uint8Array): Promise<string>;
 export function sha256(data: string | Uint8Array, raw = false) {
-	return digest('SHA-256', data, raw);
+	return raw ? digest('SHA-256', data, true) : digest('SHA-256', data, false);
 }
 
+export function sha384(data: string | Uint8Array, raw: true): Promise<Uint8Array>;
+export function sha384(data: string | Uint8Array, raw: false): Promise<string>;
+export function sha384(data: string | Uint8Array): Promise<string>;
 export function sha384(data: string | Uint8Array, raw = false) {
-	return digest('SHA-384', data, raw);
+	return raw ? digest('SHA-384', data, true) : digest('SHA-384', data, false);
 }
 
+export function sha512(data: string | Uint8Array, raw: true): Promise<Uint8Array>;
+export function sha512(data: string | Uint8Array, raw: false): Promise<string>;
+export function sha512(data: string | Uint8Array): Promise<string>;
 export function sha512(data: string | Uint8Array, raw = false) {
-	return digest('SHA-512', data, raw);
+	return raw ? digest('SHA-512', data, true) : digest('SHA-512', data, false);
 }
