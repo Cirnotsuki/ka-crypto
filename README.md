@@ -2,7 +2,7 @@
 
 # @ka\-libs/crypto
 
-**Zero\-dependency cross\-platform RSA \+ AES hybrid encryption utility for Node\.js \& Browser, fully compatible with PHP RSA\-OAEP\-SHA1\.**
+**Zero-dependency cross-platform RSA + AES hybrid encryption utility for Node.js & Browser. Solves the well-known OAEP-SHA1 interoperability gap between JavaScript and PHP OpenSSL, also powers the KA-C Runtime for build-time payload encryption.**
 
 **GitHub:**[https://github\.com/Cirnotsuki/ka\-crypto](https://github.com/Cirnotsuki/ka-crypto)
 
